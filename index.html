@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pokémon Market Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f6;
+    --panel: #ffffff;
+    --ink: #121a2b;
+    --muted: #5d6779;
+    --line: #d9dee8;
+    --accent: #2b4acb;
+    --up: #0f8a4f;
+    --down: #c8321f;
+    --row-hover: #f3f6fd;
+    --row-active: #e4eafc;
+    box-sizing: border-box;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1424; --panel: #161e33; --ink: #eef1f8; --muted: #9aa4ba; --line: #28324d;
+      --accent: #7d97ff; --up: #3fd08a; --down: #ff7a66; --row-hover: #1c2640; --row-active: #243157;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    margin: 0; min-height: 100%;
+    background: var(--bg); color: var(--ink);
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  h1 { font-size: clamp(26px, 5vw, 40px); font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.05; }
+  .updated { color: var(--muted); font-size: 14px; }
+  .banner { background: #fff3cd; color: #5c4400; border: 1px solid #e8d48a; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar button {
+    font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  }
+  .toolbar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .toolbar .spacer { flex: 1; }
+  .toolbar select {
+    font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; max-width: 100%;
+  }
+  select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .era-line { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  button:focus-visible, .row:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .layout { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .row {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
+    padding: 13px 16px; border-bottom: 1px solid var(--line); cursor: pointer; background: transparent;
+    width: 100%; text-align: left; border-left: 0; border-right: 0; border-top: 0; font: inherit; color: inherit;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row:hover { background: var(--row-hover); }
+  .row[aria-current="true"] { background: var(--row-active); box-shadow: inset 4px 0 0 var(--accent); }
+  .name { font-weight: 600; font-size: 15px; line-height: 1.25; }
+  .kind { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .price { font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; text-align: right; }
+  .chg { font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
+  .chg b { font-weight: 600; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  .cols { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+
+  .detail { padding: 18px; }
+  .detail h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+  .big { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin: 6px 0 2px; }
+  .stats { display: flex; gap: 22px; flex-wrap: wrap; color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+  .stats b { color: var(--ink); font-weight: 600; }
+  .ranges { display: flex; gap: 6px; margin-bottom: 8px; }
+  .ranges button { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+  .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+  .chart-box { position: relative; height: 300px; }
+  .empty { padding: 32px 18px; color: var(--muted); text-align: center; }
+  footer { color: var(--muted); font-size: 12px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Pokémon market tracker</h1>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <div id="banner"></div>
+
+  <div class="toolbar" id="filters">
+    <button data-filter="all" aria-pressed="true">All</button>
+    <button data-filter="card" aria-pressed="false">Cards</button>
+    <button data-filter="set" aria-pressed="false">Sets</button>
+    <select id="era" aria-label="Filter by era"><option value="all">All eras</option></select>
+    <span class="spacer"></span>
+    <button data-sort="name" aria-pressed="true">Sort: name</button>
+    <button data-sort="move" aria-pressed="false">Sort: 7-day move</button>
+  </div>
+
+  <div class="layout">
+    <div class="panel" id="list"></div>
+    <div class="panel detail" id="detail"></div>
+  </div>
+
+  <footer>Prices are TCGplayer market prices in USD, from pokemontcg.io. Set values add up the market price of every card in the set.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="data/data.js"></script>
+<script>
+(function () {
+  var data = window.PRICE_DATA;
+  var listEl = document.getElementById("list");
+  var detailEl = document.getElementById("detail");
+
+  if (!data || !data.series || !data.series.length) {
+    listEl.innerHTML = '<div class="empty">No data yet. Run <code>python fetch_prices.py</code> (or <code>python fetch_prices.py --demo</code> to preview).</div>';
+    detailEl.style.display = "none";
+    return;
+  }
+
+  document.getElementById("updated").textContent = "Last updated " + data.updated;
+  if (data.sample) {
+    document.getElementById("banner").innerHTML = '<div class="banner">Showing <b>sample data</b>, not real prices. Run <code>python fetch_prices.py</code> to load real ones.</div>';
+  }
+
+  var money = function (n) { return "$" + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var dayMs = 86400000;
+
+  // % change versus the last point on or before N days ago (null if history is too short)
+  function change(points, days) {
+    var last = points[points.length - 1];
+    var target = new Date(last[0]).getTime() - days * dayMs;
+    var base = null;
+    for (var i = 0; i < points.length; i++) {
+      if (new Date(points[i][0]).getTime() <= target) base = points[i];
+    }
+    if (!base || !base[1]) return null;
+    return (last[1] - base[1]) / base[1] * 100;
+  }
+  function fmtChg(v) {
+    if (v === null) return '<span>–</span>';
+    var cls = v >= 0 ? "up" : "down";
+    return '<span class="' + cls + '">' + (v >= 0 ? "+" : "") + v.toFixed(1) + "%</span>";
+  }
+
+  var items = data.series.map(function (s) {
+    var pts = s.points.slice().sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    return { key: s.type + ":" + s.id, type: s.type, era: s.era || "other", label: s.label, points: pts,
+             price: pts[pts.length - 1][1], d7: change(pts, 7), d30: change(pts, 30) };
+  });
+
+  var state = { filter: "all", era: "all", sort: "name", selected: items[0].key, range: 90 };
+  var eraById = {};
+  (data.eras || []).forEach(function (e) { eraById[e.id] = e; });
+  var eraSelect = document.getElementById("era");
+  (data.eras || []).forEach(function (e) {
+    if (!items.some(function (i) { return i.era === e.id; })) return;  // only eras you actually track
+    var o = document.createElement("option");
+    o.value = e.id; o.textContent = e.name + (e.years ? " (" + e.years + ")" : "");
+    eraSelect.appendChild(o);
+  });
+  eraSelect.addEventListener("change", function () { state.era = eraSelect.value; renderList(); });
+  var chart = null;
+
+  function renderList() {
+    var shown = items.filter(function (i) {
+      return (state.filter === "all" || i.type === state.filter) && (state.era === "all" || i.era === state.era);
+    });
+    shown.sort(function (a, b) {
+      if (state.sort === "move") return Math.abs(b.d7 || 0) - Math.abs(a.d7 || 0);
+      return a.label.localeCompare(b.label);
+    });
+    if (!shown.length) { listEl.innerHTML = '<div class="empty">Nothing in this view yet.</div>'; return; }
+    if (!shown.some(function (i) { return i.key === state.selected; })) state.selected = shown[0].key;
+    listEl.innerHTML = shown.map(function (i) {
+      return '<button class="row" data-key="' + i.key + '"' + (i.key === state.selected ? ' aria-current="true"' : "") + ">" +
+        '<div><div class="name">' + i.label + '</div><div class="kind">' + (i.type === "set" ? "Set total" : "Card") + ", " + (eraById[i.era] ? eraById[i.era].name : "Other") + "</div></div>" +
+        '<div class="cols"><div class="chg">7d <b>' + fmtChg(i.d7) + '</b></div><div class="chg">30d <b>' + fmtChg(i.d30) + "</b></div></div>" +
+        '<div class="price">' + money(i.price) + "</div></button>";
+    }).join("");
+    renderDetail();
+  }
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function renderDetail() {
+    var it = items.filter(function (i) { return i.key === state.selected; })[0];
+    if (!it) return;
+    var pts = it.points;
+    var cutoff = new Date(pts[pts.length - 1][0]).getTime() - state.range * dayMs;
+    var view = pts.filter(function (p) { return new Date(p[0]).getTime() >= cutoff; });
+    var prices = view.map(function (p) { return p[1]; });
+    var hi = Math.max.apply(null, prices), lo = Math.min.apply(null, prices);
+
+    detailEl.innerHTML =
+      "<h2>" + it.label + "</h2>" +
+      '<div class="era-line">' + (eraById[it.era] ? eraById[it.era].name + (eraById[it.era].years ? ", " + eraById[it.era].years : "") : "Other") + "</div>" +
+      '<div class="big">' + money(it.price) + "</div>" +
+      '<div class="stats"><span>7 days <b>' + fmtChg(it.d7) + "</b></span><span>30 days <b>" + fmtChg(it.d30) +
+      "</b></span><span>High <b>" + money(hi) + "</b></span><span>Low <b>" + money(lo) + "</b></span></div>" +
+      '<div class="ranges">' + [30, 90, 365].map(function (r) {
+        return '<button data-range="' + r + '" aria-pressed="' + (state.range === r) + '">' + (r === 365 ? "1 year" : r + " days") + "</button>";
+      }).join("") + "</div>" +
+      '<div class="chart-box"><canvas id="chart" role="img" aria-label="Price history for ' + it.label + '"></canvas></div>';
+
+    if (chart) chart.destroy();
+    var up = view.length < 2 || view[view.length - 1][1] >= view[0][1];
+    var color = up ? css("--up") : css("--down");
+    chart = new Chart(document.getElementById("chart"), {
+      type: "line",
+      data: { labels: view.map(function (p) { return p[0]; }),
+              datasets: [{ data: prices, borderColor: color, backgroundColor: color + "22", fill: true,
+                           tension: 0.25, pointRadius: view.length > 45 ? 0 : 3, borderWidth: 2.5 }] },
+      options: {
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return money(c.parsed.y); } } } },
+        scales: {
+          x: { ticks: { maxTicksLimit: 6, color: css("--muted") }, grid: { display: false } },
+          y: { ticks: { color: css("--muted"), callback: function (v) { return "$" + v; } }, grid: { color: css("--line") } }
+        }
+      }
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button");
+    if (!t) return;
+    if (t.dataset.key) { state.selected = t.dataset.key; renderList(); }
+    else if (t.dataset.filter) { state.filter = t.dataset.filter; mark("filter", t); renderList(); }
+    else if (t.dataset.sort) { state.sort = t.dataset.sort; mark("sort", t); renderList(); }
+    else if (t.dataset.range) { state.range = +t.dataset.range; renderDetail(); }
+  });
+  function mark(attr, active) {
+    document.querySelectorAll("[data-" + attr + "]").forEach(function (b) {
+      b.setAttribute("aria-pressed", b === active ? "true" : "false");
+    });
+  }
+
+  renderList();
+})();
+</script>
+</body>
+</html>

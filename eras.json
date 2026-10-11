@@ -1,0 +1,12 @@
+[
+  { "id": "wotc", "name": "Wizards of the Coast", "years": "1999–2003", "series": ["Base", "Gym", "Neo", "Legendary Collection", "E-Card"] },
+  { "id": "ex", "name": "EX", "years": "2003–2007", "series": ["EX"] },
+  { "id": "dp", "name": "Diamond & Pearl / Platinum", "years": "2007–2010", "series": ["Diamond & Pearl", "Platinum"] },
+  { "id": "hgss", "name": "HeartGold & SoulSilver", "years": "2010–2011", "series": ["HeartGold & SoulSilver"] },
+  { "id": "bw", "name": "Black & White", "years": "2011–2013", "series": ["Black & White"] },
+  { "id": "xy", "name": "XY", "years": "2013–2017", "series": ["XY"] },
+  { "id": "sm", "name": "Sun & Moon", "years": "2017–2020", "series": ["Sun & Moon"] },
+  { "id": "swsh", "name": "Sword & Shield", "years": "2020–2023", "series": ["Sword & Shield"] },
+  { "id": "sv", "name": "Scarlet & Violet", "years": "2023–2025", "series": ["Scarlet & Violet"] },
+  { "id": "mega", "name": "Mega Evolution", "years": "2025–present", "series": ["Mega Evolution"] }
+]

@@ -1,0 +1,8 @@
+{
+  "cards": [
+    { "id": "base3-5", "label": "Gengar (Fossil)" },
+    { "id": "base1-4", "label": "Charizard (Base Set)" },
+    { "id": "neo1-9", "label": "Lugia (Neo Genesis)" }
+  ],
+  "sets": []
+}
