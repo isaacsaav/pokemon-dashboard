@@ -9,22 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #eef1f6;
+    --bg: #edf2f4;
     --panel: #ffffff;
-    --ink: #121a2b;
-    --muted: #5d6779;
-    --line: #d9dee8;
-    --accent: #2b4acb;
-    --up: #0f8a4f;
-    --down: #c8321f;
-    --row-hover: #f3f6fd;
-    --row-active: #e4eafc;
+    --ink: #20313b;
+    --muted: #647681;
+    --line: #d8e1e5;
+    --accent: #167e78;
+    --up: #218354;
+    --down: #c34d48;
+    --row-hover: #f2f7f7;
+    --row-active: #e7f3f1;
+    --nav: #173746;
     box-sizing: border-box;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0e1424; --panel: #161e33; --ink: #eef1f8; --muted: #9aa4ba; --line: #28324d;
-      --accent: #7d97ff; --up: #3fd08a; --down: #ff7a66; --row-hover: #1c2640; --row-active: #243157;
+      --bg: #101a20; --panel: #18262d; --ink: #e8f0f2; --muted: #a0b1b7; --line: #30434b;
+      --accent: #53b9ad; --up: #58c58c; --down: #fa8278; --row-hover: #20323a; --row-active: #23423f;
+      --nav: #0c171c;
     }
   }
   * { box-sizing: border-box; }
@@ -32,68 +34,95 @@
   body {
     margin: 0; min-height: 100%;
     background: var(--bg); color: var(--ink);
-    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
-    padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    padding: 0 0 max(22px, env(safe-area-inset-bottom));
   }
-  .wrap { max-width: 1100px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-  h1 { font-size: clamp(26px, 5vw, 40px); font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.05; }
-  .updated { color: var(--muted); font-size: 14px; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 22px 24px 0; }
+  .site-header { background: var(--nav); color: #fff; border-bottom: 4px solid #39a99b; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 18px 24px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .brand-kicker { color: #a9d4d0; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-size: clamp(23px, 4vw, 31px); font-weight: 750; letter-spacing: -0.025em; margin: 0; line-height: 1.1; }
+  .updated { color: #d0e0e2; font-size: 13px; white-space: nowrap; }
   .banner { background: #fff3cd; color: #5c4400; border: 1px solid #e8d48a; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
-  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; padding: 11px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 1px 2px #1737460d; }
   .toolbar button {
-    font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: 13px; font-weight: 650; padding: 7px 13px; border-radius: 5px; cursor: pointer;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
   }
   .toolbar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .toolbar .spacer { flex: 1; }
+  .toolbar .spacer { flex: 1 1 10px; }
   .toolbar select {
-    font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 999px;
+    font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 5px;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; max-width: 100%;
   }
-  select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .era-line { color: var(--muted); font-size: 14px; margin-top: 2px; }
-  button:focus-visible, .row:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .search { flex: 1 1 210px; min-width: 170px; max-width: 330px; font: inherit; font-size: 13px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); color: var(--ink); }
+  input:focus-visible, select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 1px; }
+  button:focus-visible, .row:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: -2px; }
+  .era-line { color: var(--muted); font-size: 13px; margin-top: 3px; }
 
-  .layout { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 16px; align-items: start; }
-  @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+  .layout { display: grid; grid-template-columns: minmax(350px, 1.03fr) minmax(0, 1.4fr); gap: 16px; align-items: start; }
+  @media (max-width: 850px) { .layout { grid-template-columns: 1fr; } }
 
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; box-shadow: 0 1px 3px #1737460c; }
+  .list-heading { display: grid; grid-template-columns: 1fr auto 82px; gap: 14px; padding: 10px 14px; background: #f3f6f7; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+  @media (prefers-color-scheme: dark) { .list-heading { background: #203039; } }
   .row {
     display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
-    padding: 13px 16px; border-bottom: 1px solid var(--line); cursor: pointer; background: transparent;
+    padding: 11px 14px; border-bottom: 1px solid var(--line); cursor: pointer; background: transparent;
     width: 100%; text-align: left; border-left: 0; border-right: 0; border-top: 0; font: inherit; color: inherit;
   }
   .row:last-child { border-bottom: 0; }
   .row:hover { background: var(--row-hover); }
   .row[aria-current="true"] { background: var(--row-active); box-shadow: inset 4px 0 0 var(--accent); }
-  .name { font-weight: 600; font-size: 15px; line-height: 1.25; }
-  .kind { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .price { font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; text-align: right; }
-  .chg { font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
+  .collection-heading { padding: 9px 14px 6px; color: var(--muted); background: var(--row-hover); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+  .name { font-weight: 650; font-size: 13px; line-height: 1.3; }
+  .kind { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .price { font-weight: 750; font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; }
+  .chg { font-size: 11px; font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
   .chg b { font-weight: 600; }
   .up { color: var(--up); } .down { color: var(--down); }
   .cols { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
 
-  .detail { padding: 18px; }
-  .detail h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
-  .big { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin: 6px 0 2px; }
-  .stats { display: flex; gap: 22px; flex-wrap: wrap; color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+  .detail { padding: 20px; }
+  .detail h2 { margin: 0; font-size: 21px; font-weight: 750; letter-spacing: -0.015em; }
+  .card-meta { display: flex; align-items: center; gap: 14px; margin: 16px 0; padding: 12px; background: var(--row-hover); border: 1px solid var(--line); border-radius: 6px; }
+  .card-meta img { display: block; width: 96px; max-height: 134px; object-fit: contain; border-radius: 5px; }
+  .card-rarity { color: var(--muted); font-size: 13px; }
+  .price-label { color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; margin-top: 13px; }
+  .big { font-size: 35px; font-weight: 750; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin: 2px 0 8px; }
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin: 8px 0 18px; }
+  .stats span { padding: 8px 10px; background: var(--row-hover); border: 1px solid var(--line); border-radius: 5px; }
   .stats b { color: var(--ink); font-weight: 600; }
-  .ranges { display: flex; gap: 6px; margin-bottom: 8px; }
-  .ranges button { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+  .chart-title { margin: 18px 0 8px; font-size: 14px; font-weight: 700; }
+  .ranges { display: flex; gap: 5px; margin-bottom: 8px; }
+  .ranges button { font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
-  .chart-box { position: relative; height: 300px; }
+  .chart-box { position: relative; height: 260px; }
   .empty { padding: 32px 18px; color: var(--muted); text-align: center; }
   footer { color: var(--muted); font-size: 12px; margin-top: 16px; }
+  @media (max-width: 560px) {
+    .header-inner { align-items: flex-start; flex-direction: column; padding: 15px 18px; }
+    .wrap { padding: 14px 12px 0; }
+    .toolbar { padding: 9px; }
+    .toolbar .spacer { display: none; }
+    .search { flex-basis: 100%; max-width: none; order: -1; }
+    .layout { gap: 12px; }
+    .row { grid-template-columns: minmax(0, 1fr) auto; gap: 9px; }
+    .row .cols { display: none; }
+    .list-heading { grid-template-columns: 1fr 82px; }
+    .list-heading span:nth-child(2) { display: none; }
+    .detail { padding: 15px; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Pokémon market tracker</h1>
+<header class="site-header">
+  <div class="header-inner">
+    <div><div class="brand-kicker">Pokémon TCG · Market guide</div><h1>Pokémon card prices</h1></div>
     <div class="updated" id="updated"></div>
-  </header>
+  </div>
+</header>
+<main class="wrap">
 
   <div id="banner"></div>
 
@@ -102,9 +131,10 @@
     <button data-filter="card" aria-pressed="false">Cards</button>
     <button data-filter="set" aria-pressed="false">Sets</button>
     <select id="era" aria-label="Filter by era"><option value="all">All eras</option></select>
+    <input class="search" id="search" type="search" placeholder="Search cards, Pokémon, or sets" aria-label="Search cards, Pokémon, or sets">
     <span class="spacer"></span>
-    <button data-sort="name" aria-pressed="true">Sort: name</button>
-    <button data-sort="move" aria-pressed="false">Sort: 7-day move</button>
+    <button data-sort="name" aria-pressed="true">Name A–Z</button>
+    <button data-sort="move" aria-pressed="false">Biggest 7-day move</button>
   </div>
 
   <div class="layout">
@@ -112,8 +142,8 @@
     <div class="panel detail" id="detail"></div>
   </div>
 
-  <footer>Prices are TCGplayer market prices in USD, from pokemontcg.io. Set values add up the market price of every card in the set.</footer>
-</div>
+  <footer>Raw, ungraded TCGplayer market prices in USD, from pokemontcg.io. Matching card printings are listed; unavailable prices show as N/A. Set totals add available card prices; they are estimates, not sealed-product prices.</footer>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="data/data.js"></script>
@@ -156,11 +186,15 @@
 
   var items = data.series.map(function (s) {
     var pts = s.points.slice().sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
-    return { key: s.type + ":" + s.id, type: s.type, era: s.era || "other", label: s.label, points: pts,
-             price: pts[pts.length - 1][1], d7: change(pts, 7), d30: change(pts, 30) };
+    return { key: s.type + ":" + s.id, type: s.type, era: s.era || "other", label: s.label,
+             pokemon: s.pokemon || "", collection: s.collection || "Other",
+             rarity: s.rarity || "", image: s.image || "", points: pts,
+             price: pts.length ? pts[pts.length - 1][1] : null,
+             d7: pts.length ? change(pts, 7) : null, d30: pts.length ? change(pts, 30) : null };
   });
 
   var state = { filter: "all", era: "all", sort: "name", selected: items[0].key, range: 90 };
+  var searchEl = document.getElementById("search");
   var eraById = {};
   (data.eras || []).forEach(function (e) { eraById[e.id] = e; });
   var eraSelect = document.getElementById("era");
@@ -171,23 +205,38 @@
     eraSelect.appendChild(o);
   });
   eraSelect.addEventListener("change", function () { state.era = eraSelect.value; renderList(); });
+  searchEl.addEventListener("input", renderList);
   var chart = null;
 
   function renderList() {
     var shown = items.filter(function (i) {
-      return (state.filter === "all" || i.type === state.filter) && (state.era === "all" || i.era === state.era);
+      var query = searchEl.value.trim().toLocaleLowerCase();
+      var matchesSearch = !query || [i.label, i.pokemon, i.collection, i.rarity].join(" ").toLocaleLowerCase().indexOf(query) !== -1;
+      return matchesSearch && (state.filter === "all" || i.type === state.filter) && (state.era === "all" || i.era === state.era);
     });
     shown.sort(function (a, b) {
+      if (state.filter === "set" && a.collection !== b.collection) return a.collection.localeCompare(b.collection);
       if (state.sort === "move") return Math.abs(b.d7 || 0) - Math.abs(a.d7 || 0);
       return a.label.localeCompare(b.label);
     });
-    if (!shown.length) { listEl.innerHTML = '<div class="empty">Nothing in this view yet.</div>'; return; }
+    if (!shown.length) {
+      if (chart) { chart.destroy(); chart = null; }
+      listEl.innerHTML = '<div class="list-heading"><span>Item</span><span>Trend</span><span>Market</span></div><div class="empty">No matching items. Try another search or filter.</div>';
+      detailEl.innerHTML = '<div class="empty">Select an item to view its price details.</div>';
+      return;
+    }
     if (!shown.some(function (i) { return i.key === state.selected; })) state.selected = shown[0].key;
-    listEl.innerHTML = shown.map(function (i) {
-      return '<button class="row" data-key="' + i.key + '"' + (i.key === state.selected ? ' aria-current="true"' : "") + ">" +
-        '<div><div class="name">' + i.label + '</div><div class="kind">' + (i.type === "set" ? "Set total" : "Card") + ", " + (eraById[i.era] ? eraById[i.era].name : "Other") + "</div></div>" +
+    var previousCollection = null;
+    listEl.innerHTML = '<div class="list-heading"><span>Item</span><span>Trend</span><span>Market</span></div>' + shown.map(function (i) {
+      var heading = "";
+      if (state.filter === "set" && i.collection !== previousCollection) {
+        previousCollection = i.collection;
+        heading = '<div class="collection-heading">' + i.collection + "</div>";
+      }
+      return heading + '<button class="row" data-key="' + i.key + '"' + (i.key === state.selected ? ' aria-current="true"' : "") + ">" +
+        '<div><div class="name">' + i.label + '</div><div class="kind">' + (i.type === "set" ? "Set total" : i.pokemon + " card") + ", " + i.collection + "</div></div>" +
         '<div class="cols"><div class="chg">7d <b>' + fmtChg(i.d7) + '</b></div><div class="chg">30d <b>' + fmtChg(i.d30) + "</b></div></div>" +
-        '<div class="price">' + money(i.price) + "</div></button>";
+        '<div class="price">' + (i.price === null ? "N/A" : money(i.price)) + "</div></button>";
     }).join("");
     renderDetail();
   }
@@ -197,6 +246,19 @@
   function renderDetail() {
     var it = items.filter(function (i) { return i.key === state.selected; })[0];
     if (!it) return;
+    var cardMeta = it.type === "card" && (it.image || it.rarity)
+      ? '<div class="card-meta">' + (it.image ? '<img src="' + it.image + '" alt="">' : "") +
+        (it.rarity ? '<div class="card-rarity">Rarity: ' + it.rarity + "</div>" : "") + "</div>"
+      : "";
+    if (!it.points.length) {
+      if (chart) { chart.destroy(); chart = null; }
+      detailEl.innerHTML = "<h2>" + it.label + "</h2>" +
+        '<div class="era-line">' + it.collection + "</div>" +
+        cardMeta +
+        '<div class="empty">No TCGplayer market prices are available for this ' +
+        (it.type === "set" ? "set" : "card") + '.</div>';
+      return;
+    }
     var pts = it.points;
     var cutoff = new Date(pts[pts.length - 1][0]).getTime() - state.range * dayMs;
     var view = pts.filter(function (p) { return new Date(p[0]).getTime() >= cutoff; });
@@ -205,10 +267,14 @@
 
     detailEl.innerHTML =
       "<h2>" + it.label + "</h2>" +
-      '<div class="era-line">' + (eraById[it.era] ? eraById[it.era].name + (eraById[it.era].years ? ", " + eraById[it.era].years : "") : "Other") + "</div>" +
+      '<div class="era-line">' + (it.type === "card" ? it.pokemon + " · " : "") + it.collection +
+        (eraById[it.era] && eraById[it.era].years ? " · " + eraById[it.era].years : "") + "</div>" +
+      cardMeta +
+      '<div class="price-label">Current raw market price</div>' +
       '<div class="big">' + money(it.price) + "</div>" +
       '<div class="stats"><span>7 days <b>' + fmtChg(it.d7) + "</b></span><span>30 days <b>" + fmtChg(it.d30) +
       "</b></span><span>High <b>" + money(hi) + "</b></span><span>Low <b>" + money(lo) + "</b></span></div>" +
+      '<div class="chart-title">Price history</div>' +
       '<div class="ranges">' + [30, 90, 365].map(function (r) {
         return '<button data-range="' + r + '" aria-pressed="' + (state.range === r) + '">' + (r === 365 ? "1 year" : r + " days") + "</button>";
       }).join("") + "</div>" +
